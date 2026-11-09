@@ -4,7 +4,7 @@ import middleware from '../utils/middleware.js'
 
 const postRouter = Router()
 
-postRouter.get('/', async (req: Request, res: Response) => {
+postRouter.get('/', async (_req: Request, res: Response) => {
   const posts = await Post.find({}).populate('user', {username: 1, name: 1})
   res.status(200).json(posts)
 })
@@ -30,6 +30,7 @@ postRouter.post('/', middleware.verifyToken, async (req: Request, res: Response)
   const savedPost = await postObject.save()
   user.posts = user.posts.concat(savedPost._id)
   await user.save()
+  await savedPost.populate('user', {username: 1, name: 1})
   res.status(201).json(savedPost)
 })
 
