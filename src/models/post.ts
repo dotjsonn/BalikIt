@@ -2,16 +2,19 @@ import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
   title: String,
-  type: String,
+  type: {
+    type: String,
+    enum: ['lost', 'found'],
+    required: true
+  },
   location: String,
   description: String,
   contact: String,
-  resolved: String,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
-})
+}, { timestamps: true })
 
 postSchema.set('toJSON', {
   transform: (_document, returnedObject) => {
