@@ -6,7 +6,11 @@ const postSchema = new mongoose.Schema({
   location: String,
   description: String,
   contact: String,
-  resolved: String
+  resolved: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 postSchema.set('toJSON', {
