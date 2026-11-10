@@ -1,18 +1,31 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-  title: String,
+  title: {
+    type: String,
+    required: true
+  },
   type: {
     type: String,
     enum: ['lost', 'found'],
     required: true
   },
-  location: String,
-  description: String,
-  contact: String,
+  location: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String,
+    required: true
+  },
+  contact: {
+    type: String,
+    required: true
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   }
 }, { timestamps: true })
 
