@@ -12,8 +12,8 @@ authRouter.post('/register', async (req: Request, res: Response) => {
   const passwordHash = await bcrypt.hash(password, 10)
 
   const user = new User({
-    name,
-    username,
+    name: name?.trim(),
+    username: username?.trim(),
     passwordHash
   })
 
@@ -24,7 +24,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
 authRouter.post('/login', async (req: Request, res: Response) => {
   const {username, password} = req.body
 
-  const user = await User.findOne({ username })
+  const user = await User.findOne({ username: username?.trim() })
 
   if (!user || !user.passwordHash) {
     return res.status(401).json({ error: 'User cannot find' })

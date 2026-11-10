@@ -16,16 +16,15 @@ postRouter.post('/', middleware.verifyToken, async (req: Request, res: Response)
   const user = req.user
 
   if (!user) {
-    return res.status(403).json({ error: 'Your account do not have permission to this' })
+    return res.status(401).json({ error: 'Login required' })
   }
 
   const postObject = new Post({
-    title,
-    type,
-    location,
-    description,
-    contact,
-    resolved: false,
+    title: title?.trim(),
+    type: type?.trim(),
+    location: location?.trim(),
+    description: description?.trim(),
+    contact: contact?.trim(),
     user: user._id
   })
 
@@ -40,18 +39,18 @@ postRouter.delete('/:id', middleware.verifyToken ,async (req: Request, res: Resp
  const user = req.user
 
   if (!user) {
-    return res.status(403).json({ error: 'Your account do not have permission to this' })
+    return res.status(401).json({ error: 'Login required' })
   }
   const id = req.params.id
   const postOwner = await Post.findById(id)
   if (!postOwner) {
-    return res.status(403).json({error: 'The author of this post cannot be found.'})
+    return res.status(404).json({error: 'Post not found'})
   }
   const cleanedOwner = postOwner.toJSON()
   console.log(cleanedOwner.user?.toString())
   console.log(user._id.toString())
   if (cleanedOwner.user?.toString() !== user._id.toString()) {
-    return res.status(404).json({ error: 'You cannot delete this. You are not the owner of this post'})
+    return res.status(403).json({ error: 'You cannot delete this. You are not the owner of this post'})
   }
   await Post.findByIdAndDelete(id)
   res.status(204).end()
