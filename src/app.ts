@@ -7,10 +7,11 @@ import authRouter from './controllers/auth.js'
 import postRouter from './controllers/posts.js'
 
 import { fileURLToPath } from 'node:url'
+import middleware from './utils/middleware.js'
+
 const frontendPath = fileURLToPath(
   new URL('../public/', import.meta.url)
 )
-
 
 const app = express()
 
@@ -26,6 +27,8 @@ app.use(express.static(frontendPath))
 app.use(express.json())
 app.use(cookieParser())
 
+app.use(middleware.requestLogger)
+
 app.get('/health-check', (_req, res) => {
   res.status(200).json({ status: 'ok' })
 })
@@ -33,14 +36,12 @@ app.get('/health-check', (_req, res) => {
 app.use('/api/auth', authRouter)
 app.use('/api/posts', postRouter)
 
-
-app.use('/api', (_req, res) => {
-  res.status(404).json({ error: 'Unknown endpoint' })
-})
+app.use('/api', middleware.unknownEndpoint)
 
 app.get('/{*path}', (_req, res) => {
   res.sendFile('index.html', { root: frontendPath })
 })
 
+app.use(middleware.errorHandler)
 
 export default app
